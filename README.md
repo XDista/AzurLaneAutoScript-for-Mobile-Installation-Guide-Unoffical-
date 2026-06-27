@@ -1,5 +1,5 @@
 # AzurLaneAutoScript-for-Mobile-Installation-Guide-Unoffical-
-一个结合alas官方教程与本人实际探索的，在手机上安装并使用alas脚本的教程
+（非官方，不保证能跑通）一个结合alas官方教程与本人实际探索的，在手机上安装并使用alas脚本的教程
 - AzurLaneAutoScript项目链接：https://github.com/LmeSzinc/AzurLaneAutoScript
 - 不要跑到下游或者盗版项目去了！
 
