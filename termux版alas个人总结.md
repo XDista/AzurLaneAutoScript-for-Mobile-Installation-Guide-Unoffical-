@@ -71,32 +71,55 @@ ssh u0_a334@192.168.0.173 -p 8022
 输入密码，如果是第一次连接会提示让你输入“yes”三个字母
 随后便能看到电脑终端上显示出termux刚启动时的“welcome to termux”界面
 
+## 配置termux
+```bash
+pkg install -y curl wget tsu proot tar git
+curl -L https://its-pointless.github.io/setup-pointless-repo.sh | sh
+```
+
+## 安装 Ubuntu20
+```bash
+git clone https://github.com/lmeszinc/AndronixOrigin-Ubuntu
+echo "deb https://termux.mentality.rip/termux-main stable main" > $PREFIX/etc/apt/sources.list
+cp -r ./AndronixOrigin-Ubuntu/Ubuntu19 ./AndronixOrigin-Ubuntu/Ubuntu20 ./AndronixOrigin-Ubuntu/ubuntu20.sh ./
+chmod +x ubuntu20.sh && bash ubuntu20.sh
+```
+这时你会看到终端变成了“root@localhost:~#”
+先退出
+```bash
+exit
+```
+删除刚才的安装包
+```bash
+rm -rf ./Ubuntu19 ./Ubuntu20 ./ubuntu20.sh ./AndronixOrigin-Ubuntu
+```
+回到Ubuntu
+```bash
+./start-ubuntu20.sh
+```
+改掉 Andronix 脚填的 DNS
+```bash
+echo -e "nameserver 114.114.114.114\nnameserver 8.8.8.8\n" > $folder/etc/resolv.conf
+```
+更新
+```bash
+apt update && apt upgrade -y
+```
+安装Python 和 Git 等：
+```bash
+apt install -y python3 python3-pip git android-tools-adb nano
+```
 ## 更改时区
-
 ```bash
-tzselect
-4
-10
-1
-1
+DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
+```
+```bash
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+```
+```bash
 date -R
-#时区显示0800即为正常东八区（北京/上海时间）
 ```
-
-## 更换软件源
-
-因为默认清华源有无法访问的问题，故有换源操作
-
-```bash
-sudo sed -i 's/mirrors.tuna.tsinghua.edu.cn/mirrors.aliyun.com/g' /etc/apt/sources.list
-sudo apt update
-```
-
-## 安装 Adb、Python、Git 和 nano 等工具
-
-```bash
-sudo apt install -y python3 python3-pip git android-tools-adb nano
-```
+如果看到 +0800 的字符就说明成功了
 
 ## 获取 Alas
 
@@ -111,7 +134,7 @@ git clone https://github.com/LmeSzinc/AzurLaneAutoScript.git
 ## 安装依赖库
 
 ```bash
-sudo apt install -y gfortran libopenblas-dev liblapack-dev libatlas-base-dev
+apt install -y gfortran libopenblas-dev liblapack-dev libatlas-base-dev
 pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 pip3 install wheel
 python3 -m pip install --upgrade pip setuptools wheel pbr packaging --user
@@ -120,12 +143,12 @@ python3 -m pip install --upgrade pip setuptools wheel pbr packaging --user
 ## 安装其他库
 
 ```bash
-sudo apt install python3-dev libopenblas-dev libopencv-dev libzmq3-dev -y
-sudo pip3 install --upgrade pip setuptools wheel -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
-sudo pip3 install --only-binary=:all: gevent
-sudo apt-get install -y ffmpeg libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavdevice-dev pkg-config
-sudo apt install -y gfortran libopenblas-dev liblapack-dev
-sudo apt install libxml2-dev libxslt-dev python3-dev gcc g++ -y
+apt install python3-dev libopenblas-dev libopencv-dev libzmq3-dev -y
+pip3 install --upgrade pip setuptools wheel -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+pip3 install --only-binary=:all: gevent
+apt-get install -y ffmpeg libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libavdevice-dev pkg-config
+apt install -y gfortran libopenblas-dev liblapack-dev
+apt install libxml2-dev libxslt-dev python3-dev gcc g++ -y
 #长代码被截断
 ```
 
@@ -141,23 +164,29 @@ cp ./config/deploy.template-AidLux-cn.yaml ./config/deploy.yaml
 ```bash
 nano ./deploy/docker/requirements.txt
 ```
-进行如下修改：
-```bash
-numpy→1.9.5
-scipy→1.10.1
-删除 mxnet这一行
-av==10.0.0→av>=10.0.0
-```
+##### 进行如下修改：
+
+- numpy→1.9.5
+- scipy→1.10.1
+- 注释掉pillow这一行
+- 删除 mxnet这一行
+- av==10.0.0→av>=10.0.0
 然后crtl+x，按y，再按回车即可退出
 
 安装alas依赖库
 
 ```bash
-sudo pip3 install --use-pep517 -r ./deploy/docker/requirements.txt
+pip3 install --use-pep517 -r ./deploy/docker/requirements.txt
 #看到successfully installed (xxx库) 就行，安装完成后的不兼容报错不用管（或许吧）
 #这一步极易报错，个人测试这样可以安装，但实际如果真的发生报错导致无法继续安装，还是交给ai看看吧
 ```
-如果安装到某个库就报错，可以尝试先把他在./deploy/docker/requirements.txt里面注释掉，并单独pip3 install xx库==xx版本，版本请参考alas根目录的requirements.txt
+如果安装到某个库就报错，可以尝试先把它在./deploy/docker/requirements.txt里面注释掉，并在安装完成后单独pip3 install xx库==xx版本，版本请参考alas根目录的requirements.txt
+比如如果不注释吊pillow，实测安装pillow时可能会报错：packaging.version.InvalidVersion: Invalid version: '1.1-linux32'
+就等Successfully installed xxx之后单独执行
+```bash
+pip3 install pillow==8.3.2
+```
+###### 简直是玄学
 
 ## 安装 MXNet
 
@@ -166,7 +195,7 @@ sudo pip3 install --use-pep517 -r ./deploy/docker/requirements.txt
 原帖链接： https://www.binss.me/blog/run-azurlaneautoscript-on-arm64/
 
 ```bash
-sudo pip3 install https://github.com/LmeSzinc/AzurLaneAutoScript/raw/7ac25c06dc1e9841f771d8a2060d420d7e6f0a87/dev_tools/arm64/mxnet-1.9.1-py3-none-any.whl
+pip3 install https://github.com/LmeSzinc/AzurLaneAutoScript/raw/7ac25c06dc1e9841f771d8a2060d420d7e6f0a87/dev_tools/arm64/mxnet-1.9.1-py3-none-any.whl
 #长代码被截断
 ```
 
@@ -177,7 +206,7 @@ sudo pip3 install https://github.com/LmeSzinc/AzurLaneAutoScript/raw/7ac25c06dc1
 安装前置依赖
 
 ```bash
-sudo apt install -y build-essential cmake qt5-default libvtk6-dev zlib1g-dev libjpeg-dev libwebp-dev libpng-dev libtiff5-dev libopenexr-dev libgdal-dev libdc1394-22-dev libavcodec-dev libavformat-dev libswscale-dev libtheora-dev libvorbis-dev libxvidcore-dev libx264-dev yasm libopencore-amrnb-dev libopencore-amrwb-dev libv4l-dev libxine2-dev libtbb-dev libeigen3-dev python-dev python-tk pylint python-numpy python3-dev python3-tk pylint3 python3-numpy flake8 ant default-jdk doxygen unzip wget
+apt install -y build-essential cmake qt5-default libvtk6-dev zlib1g-dev libjpeg-dev libwebp-dev libpng-dev libtiff5-dev libopenexr-dev libgdal-dev libdc1394-22-dev libavcodec-dev libavformat-dev libswscale-dev libtheora-dev libvorbis-dev libxvidcore-dev libx264-dev yasm libopencore-amrnb-dev libopencore-amrwb-dev libv4l-dev libxine2-dev libtbb-dev libeigen3-dev python-dev python-tk pylint python-numpy python3-dev python3-tk pylint3 python3-numpy flake8 ant default-jdk doxygen unzip wget
 #长代码被截断
 ```
 
@@ -248,7 +277,7 @@ export MXNET_LIBRARY_PATH="/usr/local/mxnet/libmxnet.so" && python3 -c "import m
 当性能测试报错cv2相关错误时可尝试
 
 ```bash
-sudo pip install opencv-python==4.5.3.56
+pip install opencv-python==4.5.3.56
 #何意味，最终不还是pip install 了一个opencv-python，那我前面编译源码的意义是什么
 #史山项目能跑起来就不错了
 ```
@@ -271,7 +300,11 @@ export MXNET_LIBRARY_PATH="/usr/local/mxnet/libmxnet.so"
 ```bash
 source ~/.bashrc
 ```
-
+安装排查出来的冲突
+```bash
+pip3 install typing-extensions==4.3.0
+pip3 install pydantic==1.10.2
+```
 
 到这里，Alas 已经安装完成了。
 
