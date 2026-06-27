@@ -256,7 +256,7 @@ cd AzurLaneAutoScript
 python3 gui.py
 ```
 
-或者在任意位置
+或者在任意位置执行cd后：
 
 ```bash
 python3 AzurLaneAutoScript/gui.py
