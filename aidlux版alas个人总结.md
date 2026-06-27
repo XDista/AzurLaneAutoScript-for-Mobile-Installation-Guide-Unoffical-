@@ -114,13 +114,13 @@ cp ./config/deploy.template-AidLux-cn.yaml ./config/deploy.yaml
 ```bash
 nano ./deploy/docker/requirements.txt
 ```
-进行如下修改：
-```bash
-numpy→1.9.5
-scipy→1.10.1
-删除 mxnet这一行
-av==10.0.0→av>=10.0.0
-```
+##### 进行如下修改：
+
+- numpy→1.9.5
+- scipy→1.10.1
+- 删除 mxnet这一行
+- av==10.0.0→av>=10.0.0
+
 然后crtl+x，按y，再按回车即可退出
 
 安装alas依赖库
