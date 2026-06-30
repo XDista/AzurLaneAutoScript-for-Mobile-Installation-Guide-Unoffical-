@@ -1,4 +1,4 @@
-# Termux 安装 Alas 个人攻略
+# Termux 安装 Alas 个人攻略 (Ubuntu20方案)
 
 ### 前言：
 
@@ -10,7 +10,7 @@ Termux 版本： 0.118
 
 要求您有一定的代码基础、玩机经验与足够的折腾耐心
 
-还有，受制于markdown格式，本教程内会有部分长代码被截断强制分行，请注意甄别 `
+还有，受制于markdown格式，本教程内会有部分长代码被截断强制分行，请注意甄别 
 
 #### 最好能详细了解过alas官方群内的几篇相关攻略
 
@@ -21,7 +21,15 @@ Termux 版本： 0.118
 
 此教程基于《[教程] 在云手机上安装Alas 20220920》，在此教程基础上结合前两篇与ai提供的信息而完成，侧重点在于与实际安卓真机和Termux结合，剔除云手机安装流程中对于安卓真机不必要的部分，补充必要的步骤，修正部分遇到的错误
 
-#### 其实aidlux版教材和本文差别不大，不过能用ssh了就方便很多，而且自带root不用加sudo了
+#### 其实aidlux版教程和本文差别不大，不过在termux上能用ssh了就方便很多，而且Ubuntu自带root不用加sudo了
+
+### 注意：此方案的Ubuntu20自带adb版本过低(1.0.39),无法使用无线调试，也意味着只能使用VMOS运行游戏，无法使用真机上的游戏
+
+- 如果您有用真机运行游戏的需求，请转向Ubuntu 24方案
+- termux的Ubuntu 20 与24 两个方案可共存
+
+
+
 #### 接下来的所有安装过程中如果遇到询问你的选项，直接回车
 
 
@@ -181,7 +189,7 @@ pip3 install --use-pep517 -r ./deploy/docker/requirements.txt
 #这一步极易报错，个人测试这样可以安装，但实际如果真的发生报错导致无法继续安装，还是交给ai看看吧
 ```
 如果安装到某个库就报错，可以尝试先把它在./deploy/docker/requirements.txt里面注释掉，并在安装完成后单独pip3 install xx库==xx版本，版本请参考alas根目录的requirements.txt
-比如如果不注释吊pillow，实测安装pillow时可能会报错：packaging.version.InvalidVersion: Invalid version: '1.1-linux32'
+比如如果不注释掉pillow，实测安装pillow时可能会报错：packaging.version.InvalidVersion: Invalid version: '1.1-linux32'
 就等Successfully installed xxx之后单独执行
 ```bash
 pip3 install pillow==8.3.2
@@ -310,7 +318,7 @@ pip3 install pydantic==1.10.2
 
 ## 启动 Alas
 
-回到 aidlux 根目录
+回到根目录
 
 ```bash
 cd
@@ -324,12 +332,14 @@ python3 gui.py
 python3 AzurLaneAutoScript/gui.py
 ```
 
-其余操作(VMOS\真机运行游戏、调试alas、游戏内设置等)与旧版教程一致
+其余操作(VMOS、调试alas、游戏内设置等)与旧版教程一致
 
 ## 注意事项
 
 注意：性能测试结果仅供参考，不代表万事无忧
 即使性能测试通过，后续也存在报错的风险（比如一些文字识别的情景）
+
+##### 实测：三星zflip5 (骁龙8Gen2) 8G内存版魔改无屏幕盒子+主动散热运行工况：整机功耗6~8W左右，VMOS虚拟机和termux可以长期同时运行，可以满足长期无人值守挂机需求
 
 ## 后记
 #### 为什么会有这篇文章？
