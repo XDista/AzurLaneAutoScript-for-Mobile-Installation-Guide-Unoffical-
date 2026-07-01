@@ -15,6 +15,7 @@ Termux 版本： 0.118
 #### 最好能详细了解过alas官方群内的几篇相关攻略
 
 ##### 包括但不限于：
+
 - 《[教程] 在安卓真机上安装Alas》
 - 《安卓部署ALAS[基于高版本AidLux]》
 - 《[教程] 在云手机上安装Alas 20220920》
@@ -50,17 +51,23 @@ adb shell "/system/bin/device_config set_sync_disabled_for_tests persistent"
 ​	安卓14及以上可尝试：开发者选项——停止限制子进程——关闭
 
 ## 更换termux的软件源为清华源
+
 ```bash
 termux-change-repo
 #大概就是形如 mirrors.tuna.tsinghua.edu.cn的选项
 ```
+
 ### 可选：使用电脑ssh连接代替手机操作
+
 在termux内：
+
 ```bash
 pkg upgrade -y
 pkg install openssh
 ```
+
 打开ssh：
+
 ```bash
 sshd
 passwd
@@ -68,65 +75,95 @@ passwd
 whoami
 #这里会弹出一个类似 u0_a(xxx)的名字，记住它，这里以u0_a334为例
 ```
+
 接下来暂时断开网络代理（如果有的话）
 在无线调试或者路由器后台界面查看并记住手机的本地局域网ip（形如 192.168.0.173 等）
 一些路由器可以开启静态ip以固定这个值
 在电脑上：打开powershell（推荐）或者cmd
+
 ```bash
 ssh u0_a334@192.168.0.173 -p 8022
 #这里@符号前面就是whoami提示的名字，后面就是局域网ip
 ```
+
 输入密码，如果是第一次连接会提示让你输入“yes”三个字母
 随后便能看到电脑终端上显示出termux刚启动时的“welcome to termux”界面
 
+##### 报错：WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!
+
+需要清除旧缓存
+
+```bash
+ssh-keygen -R "[192.168.0.114]:8022"
+```
+
 ## 配置termux
+
 ```bash
 pkg install -y curl wget tsu proot tar git
 curl -L https://its-pointless.github.io/setup-pointless-repo.sh | sh
 ```
 
 ## 安装 Ubuntu20
+
 ```bash
 git clone https://github.com/lmeszinc/AndronixOrigin-Ubuntu
 echo "deb https://termux.mentality.rip/termux-main stable main" > $PREFIX/etc/apt/sources.list
 cp -r ./AndronixOrigin-Ubuntu/Ubuntu19 ./AndronixOrigin-Ubuntu/Ubuntu20 ./AndronixOrigin-Ubuntu/ubuntu20.sh ./
 chmod +x ubuntu20.sh && bash ubuntu20.sh
 ```
+
 这时你会看到终端变成了“root@localhost:~#”
 先退出
+
 ```bash
 exit
 ```
+
 删除刚才的安装包
+
 ```bash
 rm -rf ./Ubuntu19 ./Ubuntu20 ./ubuntu20.sh ./AndronixOrigin-Ubuntu
 ```
+
 回到Ubuntu
+
 ```bash
 ./start-ubuntu20.sh
 ```
+
 改掉 Andronix 脚填的 DNS
+
 ```bash
 echo -e "nameserver 114.114.114.114\nnameserver 8.8.8.8\n" > $folder/etc/resolv.conf
 ```
+
 更新
+
 ```bash
 apt update && apt upgrade -y
 ```
+
 安装Python 和 Git 等：
+
 ```bash
 apt install -y python3 python3-pip git android-tools-adb nano
 ```
+
 ## 更改时区
+
 ```bash
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
 ```
+
 ```bash
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 ```
+
 ```bash
 date -R
 ```
+
 如果看到 +0800 的字符就说明成功了
 
 ## 获取 Alas
@@ -168,18 +205,21 @@ apt install libxml2-dev libxslt-dev python3-dev gcc g++ -y
 cd AzurLaneAutoScript
 cp ./config/deploy.template-AidLux-cn.yaml ./config/deploy.yaml
 ```
+
 这里直接拿原本的requirements.txt安装会有严重冲突，按照接下来的方式进行微调
+
 ```bash
 nano ./deploy/docker/requirements.txt
 ```
+
 ##### 进行如下修改：
 
 - numpy→1.9.5
 - scipy→1.10.1
-- 注释掉pillow这一行
+- 注释掉imageio这一行
 - 删除 mxnet这一行
 - av==10.0.0→av>=10.0.0
-然后crtl+x，按y，再按回车即可退出
+  然后crtl+x，按y，再按回车即可退出
 
 安装alas依赖库
 
@@ -188,12 +228,15 @@ pip3 install --use-pep517 -r ./deploy/docker/requirements.txt
 #看到successfully installed (xxx库) 就行，安装完成后的不兼容报错不用管（或许吧）
 #这一步极易报错，个人测试这样可以安装，但实际如果真的发生报错导致无法继续安装，还是交给ai看看吧
 ```
+
 如果安装到某个库就报错，可以尝试先把它在./deploy/docker/requirements.txt里面注释掉，并在安装完成后单独pip3 install xx库==xx版本，版本请参考alas根目录的requirements.txt
-比如如果不注释掉pillow，实测安装pillow时可能会报错：packaging.version.InvalidVersion: Invalid version: '1.1-linux32'
+比如如果不注释掉imageio，实测安装pillow时可能会报错：packaging.version.InvalidVersion: Invalid version: '1.1-linux32'
 就等Successfully installed xxx之后单独执行
+
 ```bash
-pip3 install pillow==8.3.2
+pip3 install imageio==2.27.0
 ```
+
 ###### 简直是玄学
 
 ## 安装 MXNet
@@ -303,12 +346,15 @@ export LD_PRELOAD="/usr/lib/aarch64-linux-gnu/libgomp.so.1:/usr/lib/aarch64-linu
 export MXNET_LIBRARY_PATH="/usr/local/mxnet/libmxnet.so"
 #长代码被截断
 ```
+
 然后保存退出
 
 ```bash
 source ~/.bashrc
 ```
+
 安装排查出来的冲突
+
 ```bash
 pip3 install typing-extensions==4.3.0
 pip3 install pydantic==1.10.2
@@ -342,7 +388,9 @@ python3 AzurLaneAutoScript/gui.py
 ##### 实测：三星zflip5 (骁龙8Gen2) 8G内存版魔改无屏幕盒子+主动散热运行工况：整机功耗6~8W左右，VMOS虚拟机和termux可以长期同时运行，可以满足长期无人值守挂机需求
 
 ## 后记
+
 #### 为什么会有这篇文章？
+
 个人最近入手了相关安卓设备用于运行游戏本体和alas，但alas官方现有的教程要么已经过时，要么根本牛头不对马嘴，新版教程甚至只确保到打开主界面？？！
 
 （并非确保，里面一堆版本冲突）
