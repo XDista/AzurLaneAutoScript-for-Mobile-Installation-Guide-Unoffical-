@@ -240,7 +240,7 @@ nano ./deploy/docker/requirements.txt
 ```
 ##### 进行如下修改：
 
-- numpy→1.9.5
+- numpy→1.19.5
 - scipy→1.10.1
 - 注释掉pillow这一行
 - 删除 mxnet这一行
